@@ -72,6 +72,7 @@ public class AsterixInputStreamReader extends Reader {
             return -1;
         }
         int len = 0;
+        int remainingByte = 0;
         charBuffer.clear();
         while (charBuffer.position() == 0) {
             if (byteBuffer.hasRemaining()) {
@@ -82,9 +83,11 @@ public class AsterixInputStreamReader extends Reader {
                 } else {
                     // need to read more data
                     System.arraycopy(bytes, byteBuffer.position(), bytes, 0, byteBuffer.remaining());
-                    byteBuffer.position(byteBuffer.remaining());
+                    remainingByte = byteBuffer.remaining();
+                    byteBuffer.position(remainingByte);
                     while (len == 0) {
                         len = in.read(bytes, byteBuffer.position(), bytes.length - byteBuffer.position());
+                        len += remainingByte;
                     }
                 }
             } else {
